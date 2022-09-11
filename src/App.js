@@ -20,22 +20,30 @@ import {
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {connect} from 'react-redux';
 
 import AuthScreen from './screen/auth.screen';
+import HomeScreen from './screen/home.screen';
 
 const Stack = createNativeStackNavigator();
 
-const App = () => {
+const App = props => {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Login"
-            options={{headerShown: false}}
-            component={AuthScreen}
-          />
-        </Stack.Navigator>
+        {props.auth.isAuth ? (
+          <Stack.Navigator>
+            <Stack.Screen name="Home" component={HomeScreen} />
+          </Stack.Navigator>
+        ) : (
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Login"
+              options={{headerShown: false}}
+              component={AuthScreen}
+            />
+          </Stack.Navigator>
+        )}
       </NavigationContainer>
     </SafeAreaProvider>
   );
@@ -43,4 +51,9 @@ const App = () => {
 
 const styles = StyleSheet.create({});
 
-export default App;
+const mapStateToProps = state => {
+  //console.log({ state })
+  return {auth: state.auth};
+};
+
+export default connect(mapStateToProps)(App);
